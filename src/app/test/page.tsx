@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from 'react-live';
 import * as THREE from 'three';
 import ThreeJSHarness from '@/components/ThreeJSHarness';
@@ -8,7 +9,7 @@ import { supabase } from '@/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 
 // ======================================================================================
-// RESTORED: This is the detailed, instructional boilerplate you approved.
+// THIS IS THE CORRECT, DETAILED BOILERPLATE. IT WILL NOT BE CHANGED AGAIN.
 // ======================================================================================
 const initialCode = `
 // Welcome to the Aster Competition!
@@ -97,6 +98,8 @@ const editorTheme = {
 
 export default function CompetitionPage() {
 
+  const router = useRouter();
+  
   const [studentCode, setStudentCode] = useState(initialCode);
   const [submissionState, setSubmissionState] = useState<'idle' | 'confirming' | 'enteringUsername' | 'recording' | 'success'>('idle');
   const [username, setUsername] = useState('');
@@ -145,9 +148,9 @@ export default function CompetitionPage() {
         
         setSubmissionState('success');
         setTimeout(() => {
-          alert("Redirecting to gallery...");
-          setSubmissionState('idle');
-        }, 3000);
+          router.push('/gallery');
+        }, 2000);
+
       } catch (error) {
         console.error("Error during submission: ", error);
         alert("An error occurred. Please check the console and try again.");
@@ -161,9 +164,11 @@ export default function CompetitionPage() {
   return (
     <LiveProvider code={studentCode} onChange={setStudentCode} scope={scope} theme={editorTheme} noInline={true}>
       <main className="flex flex-col w-screen h-screen bg-[#0a0a23] text-white font-sans">
+        
         <header className="p-4 bg-[#1a0033] border-b border-[#2d1b69] text-center z-10">
           <h1 className="text-2xl font-bold font-orbitron">Aster Competition</h1>
         </header>
+
         <div className="flex flex-grow h-full overflow-hidden">
           <div className="w-1/2 h-full flex flex-col border-r border-[#2d1b69]">
             <div className="p-4 bg-[#1a0033]"><h2 className="text-xl font-bold font-orbitron">Code Editor</h2><p className="text-sm text-gray-400">Create your masterpiece in the `MyCreativeBlob` class.</p></div>
@@ -175,6 +180,7 @@ export default function CompetitionPage() {
              <LiveError className="absolute bottom-0 left-0 right-0 p-3 bg-red-800 text-white font-mono text-sm z-50" />
           </div>
         </div>
+
         <button onClick={handleOpenConfirm} className="fixed bottom-6 right-6 z-40 px-8 py-3 bg-[#1a0033] border-2 border-[#2d1b69] rounded-lg font-orbitron font-bold text-lg text-white transition-all duration-300 hover:bg-[#2d1b69] hover:border-cyan-400 hover:scale-105 active:scale-100">SUBMIT</button>
         
         {submissionState === 'confirming' && (
